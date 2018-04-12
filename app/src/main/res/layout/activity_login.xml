@@ -4,6 +4,76 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/loginbackgroundblur"
     tools:context=".activities.LoginActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="234dp"
+        android:layout_height="77dp"
+        android:layout_marginTop="68dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="137dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="88dp"
+        android:fontFamily="sans-serif-condensed"
+        android:text="耕云"
+        android:textAlignment="center"
+        android:textColor="@color/colorWhite"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        android:typeface="normal"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="290dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="32dp"
+        android:background="@android:drawable/editbox_background"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Password"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="290dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="232dp"
+        android:background="@android:drawable/editbox_background"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Username"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="116dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="92dp"
+        android:background="@drawable/button"
+        android:text="登陆"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText" />
 
 </android.support.constraint.ConstraintLayout>
