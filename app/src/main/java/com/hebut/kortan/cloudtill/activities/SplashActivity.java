@@ -19,18 +19,18 @@ public class SplashActivity extends AppCompatActivity {
     public void goToMain(View view) {
         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
         startActivity(intent);
-        finish();
+//        finish();
     }
 
     public void goToWifi(View view) {
         Intent intent = new Intent(SplashActivity.this, SensorActivity.class);
         startActivity(intent);
-        finish();
+//        finish();
     }
 
     public void goToLogin(View view) {
         Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
         startActivity(intent);
-        finish();
+//        finish();
     }
 }
