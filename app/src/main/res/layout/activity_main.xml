@@ -11,9 +11,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.ashokvarma.bottomnavigation.BottomNavigationBar
+        android:id="@+id/bottom_navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:bnbActiveColor="@color/colorWhite"
+        app:bnbBackgroundColor="@color/fbutton_color_green_sea"
+        app:bnbInactiveColor="@color/colorGray"
+        app:bnbElevation="0dp"
+        app:bnbMode="mode_fixed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/main_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F1F1F1"
+        app:layout_constraintTop_toBottomOf="@+id/bottom_navigation_bar"
+        tools:layout_editor_absoluteX="0dp">
+
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>
