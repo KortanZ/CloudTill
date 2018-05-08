@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:bnbActiveColor="@color/colorWhite"
-        app:bnbBackgroundColor="@color/fbutton_color_green_sea"
+        app:bnbBackgroundColor="@color/colorGreenSea"
         app:bnbInactiveColor="@color/colorGray"
         app:bnbElevation="0dp"
         app:bnbMode="mode_fixed"
@@ -34,7 +34,7 @@
         android:id="@+id/main_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#F1F1F1"
+        android:background="@color/colorWhite"
         app:layout_constraintTop_toBottomOf="@+id/bottom_navigation_bar"
         tools:layout_editor_absoluteX="0dp">
 

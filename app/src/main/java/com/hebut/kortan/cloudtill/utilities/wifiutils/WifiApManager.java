@@ -2,11 +2,15 @@ package com.hebut.kortan.cloudtill.utilities.wifiutils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.DhcpInfo;
+import android.net.Uri;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -37,6 +41,17 @@ public class WifiApManager {
     public WifiApManager(Context context) {
         this.context = context;
         wifiManager = (WifiManager) this.context.getSystemService(Context.WIFI_SERVICE);
+    }
+
+    public void showWritePermissionSettings() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.System.canWrite(this.context)) {
+                Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + this.context.getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                this.context.startActivity(intent);
+            }
+        }
     }
 
     /**

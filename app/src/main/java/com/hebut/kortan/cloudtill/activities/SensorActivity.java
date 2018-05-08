@@ -67,12 +67,12 @@ public class SensorActivity extends AppCompatActivity {
                     textView1.append("isReachable: " + clientScanResult.isReachable() + "\n");
                 }
 
-                if (wifiApManager.IsApOn()) {
-                    textView2.setText(wifiApManager.GetHotspotIpAddress());
-                }
-                else {
-                    textView2.setText("AP Off");
-                }
+//                if (wifiApManager.IsApOn()) {
+//                    textView2.setText(wifiApManager.GetHotspotIpAddress());
+//                }
+//                else {
+//                    textView2.setText("AP Off");
+//                }
             }
         });
     }
@@ -113,6 +113,7 @@ public class SensorActivity extends AppCompatActivity {
                 scan();
                 break;
             case 1:
+                wifiApManager.showWritePermissionSettings();
                 wifiApManager.OpenAp("CloudTill", "12345678");
                 break;
             case 2:

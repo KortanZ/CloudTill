@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.github.lzyzsd.circleprogress.ArcProgress
+        android:id="@+id/arc_progress"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="40dp"
+        app:arc_bottom_text="温度"
+        app:arc_finished_color="@color/fbutton_color_green_sea"
+        app:arc_max="45"
+        app:arc_progress="25"
+        app:arc_stroke_width="7dp"
+        app:arc_suffix_text="℃"
+        app:arc_text_color="@color/fbutton_color_green_sea"
+        app:arc_unfinished_color="@color/colorGray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.github.lzyzsd.circleprogress.ArcProgress
+        android:id="@+id/arc_progress2"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="48dp"
+        app:arc_bottom_text="相对湿度"
+        app:arc_finished_color="@color/fbutton_color_green_sea"
+        app:arc_progress="40"
+        app:arc_stroke_width="7dp"
+        app:arc_text_color="@color/fbutton_color_green_sea"
+        app:arc_unfinished_color="@color/colorGray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arc_progress" />
+
+</android.support.constraint.ConstraintLayout>

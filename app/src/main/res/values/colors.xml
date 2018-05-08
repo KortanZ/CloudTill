@@ -5,4 +5,10 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorWhite">#fafafa</color>
     <color name="colorGray">#c8c8c8</color>
+    <color name="colorUFOGreen">#2ed573</color>
+    <color name="colorLimeSoap">#7bed9f</color>
+    <color name="colorEmerald">#2ecc71</color>
+    <color name="colorNephritis">#27ae60</color>
+    <color name="colorGreenSea">#16a085</color>
+    <color name="colorTurquoise">#1abc9c</color>
 </resources>
