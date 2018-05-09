@@ -1,11 +1,16 @@
 package com.hebut.kortan.cloudtill.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +32,8 @@ public class ClientFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+
+    private View mView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -59,20 +66,20 @@ public class ClientFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_client_list, container, false);
 
+        mView = view;
+
+
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyClientRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+        Context context = view.getContext();
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
+        recyclerView.setAdapter(new MyClientRecyclerViewAdapter(DummyContent.ITEMS, mListener));
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -82,6 +89,17 @@ public class ClientFragment extends Fragment {
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        try {
+            ClientFragCallBackInterface callback = (ClientFragCallBackInterface) getActivity();
+            callback.myCallBack(mView);
+        } catch (ClassCastException e) {
+            e.printStackTrace();
         }
     }
 
@@ -104,5 +122,9 @@ public class ClientFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
+    }
+
+    public interface ClientFragCallBackInterface {
+        void myCallBack(View view);
     }
 }
