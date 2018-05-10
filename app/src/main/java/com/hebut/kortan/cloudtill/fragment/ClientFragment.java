@@ -1,16 +1,11 @@
 package com.hebut.kortan.cloudtill.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +28,7 @@ public class ClientFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
-    private View mView;
+    private View view;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -64,10 +59,17 @@ public class ClientFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_client_list, container, false);
 
-        mView = view;
+        //Fragment销毁后View不会销毁，手动移除View并返回之前View解决Pager第二次进入空白的问题
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null) {
+                parent.removeView(view);
+            }
+            return view;
+        }
 
+        view = inflater.inflate(R.layout.fragment_client_list, container, false);
 
         // Set the adapter
         Context context = view.getContext();
@@ -78,6 +80,15 @@ public class ClientFragment extends Fragment {
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
         recyclerView.setAdapter(new MyClientRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+
+        //调用interface设置pager的adapter
+        try {
+            ClientFragCallBackInterface callback = (ClientFragCallBackInterface) context;
+            callback.myCallBack(view);
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+        }
+
         return view;
     }
 
@@ -90,17 +101,7 @@ public class ClientFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
         }
-    }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        try {
-            ClientFragCallBackInterface callback = (ClientFragCallBackInterface) getActivity();
-            callback.myCallBack(mView);
-        } catch (ClassCastException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -124,6 +125,7 @@ public class ClientFragment extends Fragment {
         void onListFragmentInteraction(DummyItem item);
     }
 
+    //设置adapter的接口
     public interface ClientFragCallBackInterface {
         void myCallBack(View view);
     }

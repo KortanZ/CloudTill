@@ -74,31 +74,25 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
 
         //new TestTask().execute();
 
-//        getSupportFragmentManager().beginTransaction().add(clientFrag, "Client").add(infoFrag, "Info").add(realTimeData, "overView").commit();
-
-
+        //导航栏初始化
         BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
 
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.ic_watch_later_white_24dp, "实时数据"))
-                .addItem(new BottomNavigationItem(R.drawable.ic_opacity_white_24dp, "农田管理"))
                 .addItem(new BottomNavigationItem(R.drawable.ic_cloud_white_24dp, "云数据"))
                 .initialise();
 
+        //显示初始Fragment
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, clientFrag).commit();
 
+        //为导航栏添加Listener
         bottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.OnTabSelectedListener(){
             @Override
             public void onTabSelected(int position) {
                 if (position == 0) {
-//                    getSupportFragmentManager().beginTransaction().hide(infoFrag).hide(clientFrag).show(realTimeData).commit();
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, clientFrag).commit();
                 }
                 else if (position == 1) {
-
-                }
-                else if (position == 2) {
-//                    getSupportFragmentManager().beginTransaction().hide(clientFrag).show(infoFrag).hide(realTimeData).commit();
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, infoFrag).commit();
                 }
             }
@@ -110,18 +104,6 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
             }
         });
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mPager.getCurrentItem() == 0) {
-            // If the user is currently looking at the first step, allow the system to handle the
-            // Back button. This calls finish() on this activity and pops the back stack.
-            super.onBackPressed();
-        } else {
-            // Otherwise, select the previous step.
-            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-        }
     }
 
     public class TestTask extends AsyncTask<Void, Void, String>{
