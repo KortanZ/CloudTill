@@ -3,10 +3,13 @@ package com.hebut.kortan.cloudtill.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.hebut.kortan.cloudtill.R;
 
@@ -66,6 +69,18 @@ public class FarmManage extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_farm_manage, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Button button = (Button) getActivity().findViewById(R.id.testButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(), "Ooops", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
