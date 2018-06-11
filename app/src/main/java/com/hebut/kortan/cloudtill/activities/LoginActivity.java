@@ -22,14 +22,12 @@ public class LoginActivity extends AppCompatActivity {
     MaterialEditText user;
     MaterialEditText passwd;
 
-    TextView testLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         user = (MaterialEditText) findViewById(R.id.username);
         passwd = (MaterialEditText) findViewById(R.id.password);
-        testLogin = (TextView) findViewById(R.id.testLogin);
     }
 
     public void tet(View view) {
@@ -64,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.putExtra("username", s);
                 startActivity(intent);
+                finish();
             }
         }
     }

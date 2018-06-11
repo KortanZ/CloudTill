@@ -12,6 +12,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,6 +65,9 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
     private ArcProgress teProgress;
     private ArcProgress hrProgress;
 
+    private TextView stateText;
+    private Button stateButton;
+
     private String rawData;
 
     public void onListFragmentInteraction(int position){
@@ -71,8 +75,24 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
         Toast.makeText(MainActivity.this, String.valueOf(position), Toast.LENGTH_SHORT).show();
     }
 
-    public void onFragmentInteraction(Uri uri){
+    public void onFragmentInteraction(TextView v, Button b){
+        stateText = v;
+        stateButton = b;
+    }
 
+    @Override
+    public void controlDev(String cmd) {
+        final String temp = cmd;
+        new Thread(){
+            @Override
+            public void run(){
+                try {
+                    soc.SocketSendMsg(temp, pointPos);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     public void onFragmentMessage() {
@@ -80,7 +100,7 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
             @Override
             public void run(){
                 try {
-                    soc.SocketSendMsg("0123456789", pointPos);
+                    soc.SocketSendMsg("Sync Request!", pointPos);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -134,7 +154,6 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
             public void onTabSelected(int position) {
                 if (position == 0) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, clientFrag).commit();
-//                    getFragmentManager().findFragmentById(R.id.main_fragment_container).getView().findViewById(R.id.pager);
                 }
                 else if (position == 1) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, infoFrag).commit();
@@ -149,21 +168,20 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
         });
 
         //wifi and socket
-//        wifiApManager = new WifiApManager(this);
-//        if (!wifiApManager.IsApOn()) {
-//            wifiApManager.showWritePermissionSettings();
-//            wifiApManager.OpenAp("CloudTill", "12345678");
-//        }
+        wifiApManager = new WifiApManager(this);
+        if (!wifiApManager.IsApOn()) {
+            wifiApManager.showWritePermissionSettings();
+            wifiApManager.OpenAp("CloudTill", "12345678");
+        }
 
         Handler myHandler = new Handler(getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 //socket消息为msg.obj.toString()
-
                 rawData = msg.obj.toString();
                 Gson gson = new Gson();
                 SensorData da = gson.fromJson(msg.obj.toString(),SensorData.class);
-                if (originDataView != null && parsedDataView != null) {
+                if (originDataView != null && parsedDataView != null && stateText != null && stateButton != null) {
                     originDataView .setText("原始数据: " + msg.obj.toString() + "\n");
                     parsedDataView.setText("TE: " + da.getTE() + "\n");
                     parsedDataView.append("HR: " + da.getHR() + "\n");
@@ -173,6 +191,14 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
                     parsedDataView.append("RF: " + da.getRF() + "\n");
                     parsedDataView.append("CD: " + da.getCD() + "\n");
                     parsedDataView.append("SS: " + da.getSS() + "\n");
+
+                    if (da.getSS().equals("1")) {
+                        stateText.setText("电磁阀开启");
+                        stateButton.setText("关闭");
+                    } else {
+                        stateText.setText("电磁阀关闭");
+                        stateButton.setText("开启");
+                    }
                 }
 
                 ObjectAnimator teAnim = ObjectAnimator.ofInt(teProgress, "progress", 0, Float.valueOf(da.getTE()).intValue());
@@ -229,7 +255,7 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
         }
     }
     public  void StartSocket() {
-//        while (wifiApManager.IsApOn());
+        while (wifiApManager.IsApOn());
         try {
             new Thread(){
                 @Override

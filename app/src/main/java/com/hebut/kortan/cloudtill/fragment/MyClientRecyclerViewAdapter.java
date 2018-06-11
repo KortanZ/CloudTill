@@ -8,9 +8,7 @@ import android.widget.TextView;
 
 import com.hebut.kortan.cloudtill.R;
 import com.hebut.kortan.cloudtill.fragment.ClientFragment.OnListFragmentInteractionListener;
-import com.hebut.kortan.cloudtill.dummy.DummyContent.DummyItem;
 
-import java.io.Serializable;
 import java.net.Socket;
 import java.util.List;
 

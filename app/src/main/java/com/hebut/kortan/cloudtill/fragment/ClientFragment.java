@@ -14,8 +14,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.hebut.kortan.cloudtill.R;
-import com.hebut.kortan.cloudtill.dummy.DummyContent;
-import com.hebut.kortan.cloudtill.dummy.DummyContent.DummyItem;
 import com.hebut.kortan.cloudtill.utilities.SocketUtils;
 
 /**

@@ -76,12 +76,4 @@
         app:layout_constraintTop_toBottomOf="@+id/password"
         app:shadowEnabled="false" />
 
-    <TextView
-        android:id="@+id/testLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="243dp"
-        tools:layout_editor_absoluteY="31dp" />
-
 </android.support.constraint.ConstraintLayout>

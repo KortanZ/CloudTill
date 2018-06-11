@@ -10,11 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.hebut.kortan.cloudtill.R;
-import com.hebut.kortan.cloudtill.applications.AdapterApplication;
-import com.hebut.kortan.cloudtill.dummy.DummyContent;
+
+import org.w3c.dom.Text;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,7 +75,28 @@ public class FarmManage extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        TextView stateText = (TextView) getActivity().findViewById(R.id.stateText);
+        final Button stateButton = (Button) getActivity().findViewById(R.id.stateButton);
+        sendView(stateText, stateButton);
 
+        stateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (stateButton.getText().toString().equals("关闭")) {
+                    mListener.controlDev("close");
+                }
+
+                if (stateButton.getText().toString().equals("开启")) {
+                    mListener.controlDev("open");
+                }
+            }
+        });
+    }
+
+    public void sendView(TextView v, Button b) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(v, b);
+        }
     }
 
     @Override
@@ -107,7 +130,8 @@ public class FarmManage extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(TextView v, Button b);
+        void controlDev(String cmd);
     }
 }
 

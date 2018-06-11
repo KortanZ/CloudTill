@@ -84,7 +84,8 @@ public class RealTimeData extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Button button = (Button) getActivity().findViewById(R.id.refreshData);
+        Button uploadButton = (Button) getActivity().findViewById(R.id.uploadData);
+        Button refreshButton = (Button) getActivity().findViewById(R.id.refreshData);
         TextView originText = (TextView) getActivity().findViewById(R.id.originData);
         TextView parsedText = (TextView) getActivity().findViewById(R.id.parsedData);
         ArcProgress teProgress = (ArcProgress) getActivity().findViewById(R.id.te_progress);
@@ -96,11 +97,18 @@ public class RealTimeData extends Fragment {
         progresseList.add(teProgress);
         progresseList.add(hrProgress);
         sendView(viewList, progresseList);
-        button.setOnClickListener(new View.OnClickListener() {
+        refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mDeliverer != null) {
                     mDeliverer.onFragmentMessage();
+                }
+            }
+        });
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDeliverer != null) {
                     mDeliverer.doSth();
                 }
             }
