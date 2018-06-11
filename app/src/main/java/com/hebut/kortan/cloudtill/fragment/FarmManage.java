@@ -9,9 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hebut.kortan.cloudtill.R;
+import com.hebut.kortan.cloudtill.applications.AdapterApplication;
+import com.hebut.kortan.cloudtill.dummy.DummyContent;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,11 +49,11 @@ public class FarmManage extends Fragment {
      * @return A new instance of fragment FarmManage.
      */
     // TODO: Rename and change types and number of parameters
-    public static FarmManage newInstance(String param1, String param2) {
+    public static FarmManage newInstance() {
         FarmManage fragment = new FarmManage();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+//        args.putString(ARG_PARAM1, param1);
+//        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,10 +61,6 @@ public class FarmManage extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -74,20 +73,7 @@ public class FarmManage extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Button button = (Button) getActivity().findViewById(R.id.testButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "Ooops", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -99,6 +85,8 @@ public class FarmManage extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+
     }
 
     @Override
@@ -122,3 +110,5 @@ public class FarmManage extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 }
+
+

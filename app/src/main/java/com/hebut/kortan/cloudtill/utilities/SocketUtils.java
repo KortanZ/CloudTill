@@ -3,6 +3,8 @@ package com.hebut.kortan.cloudtill.utilities;
 import android.os.Handler;
 import android.os.Message;
 
+import com.hebut.kortan.cloudtill.fragment.MyClientRecyclerViewAdapter;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -18,7 +20,7 @@ import java.util.concurrent.Executors;
 
 public class SocketUtils {
     public final int Broadcast = -1;
-    private List<Socket> mList = new ArrayList<>();
+    private static List<Socket> mList = new ArrayList<>();
     private ServerSocket server = null;
     private ExecutorService mExecutorService = null; //thread pool
     private Handler mHandler;
@@ -39,7 +41,7 @@ public class SocketUtils {
 
             while(true) {
                 client = server.accept();
-                System.out.println("Server received");
+//                System.out.println("Server received");
                 mList.add(client);
                 mExecutorService.execute(new Service(client, mList.indexOf(client))); //start a new thread to handle the connection
             }
@@ -48,8 +50,8 @@ public class SocketUtils {
         }
     }
 
-    public int SocketGetTotalNum(){
-        return mList.size();
+    public static List<Socket> SocketGetList(){
+        return mList;
     }
 
     public void SocketSendMsg(String msg, int sIndex){
@@ -100,8 +102,8 @@ public class SocketUtils {
             this.sIndex = sIndex;
             try {
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                msg = "user" +this.socket.getInetAddress() + "come total:" + mList.size();
-                sendmsg(msg, sIndex);
+//                msg = "user" +this.socket.getInetAddress() + "come total:" + mList.size();
+//                sendmsg(msg, sIndex);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -120,7 +122,7 @@ public class SocketUtils {
                             mList.remove(socket);
                             break;
                         } else {
-                            msg = socket.getInetAddress() + ":" + msg;
+//                            msg = socket.getInetAddress() + ":" + msg;
 //                            sendmsg(msg, sIndex);
                             Message socketMessage = mHandler.obtainMessage(sIndex, msg);
                             socketMessage.sendToTarget();

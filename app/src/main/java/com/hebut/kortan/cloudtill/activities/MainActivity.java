@@ -1,43 +1,46 @@
 package com.hebut.kortan.cloudtill.activities;
 
+import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.github.lzyzsd.circleprogress.ArcProgress;
 import com.google.gson.Gson;
 import com.hebut.kortan.cloudtill.R;
-import com.hebut.kortan.cloudtill.dummy.DummyContent;
+import com.hebut.kortan.cloudtill.data.SensorData;
 import com.hebut.kortan.cloudtill.fragment.ClientFragment;
 import com.hebut.kortan.cloudtill.fragment.FarmManage;
 import com.hebut.kortan.cloudtill.fragment.MyClientPagerAdapter;
 import com.hebut.kortan.cloudtill.fragment.RealTimeData;
 import com.hebut.kortan.cloudtill.fragment.fragmentInfo;
-import com.hebut.kortan.cloudtill.fragment.fragmentOverview;
-import com.hebut.kortan.cloudtill.utilities.JsonUtils;
 import com.hebut.kortan.cloudtill.utilities.NetworkUtils;
+import com.hebut.kortan.cloudtill.utilities.SocketUtils;
+import com.hebut.kortan.cloudtill.utilities.wifiutils.WifiApManager;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
-public class MainActivity extends FragmentActivity implements ClientFragment.OnListFragmentInteractionListener, RealTimeData.OnFragmentInteractionListener, FarmManage.OnFragmentInteractionListener, ClientFragment.ClientFragCallBackInterface {
 
-    private TextView myContent;
+public class MainActivity extends FragmentActivity implements ClientFragment.OnListFragmentInteractionListener, FarmManage.OnFragmentInteractionListener, RealTimeData.OnFragmentInteractionListener, ClientFragment.ClientFragCallBackInterface, RealTimeData.OnFragmentMessageDeliverer {
+
+    private TextView username;
 
     private fragmentInfo infoFrag = new fragmentInfo();
-    private fragmentOverview overviewFrag = new fragmentOverview();
-
     private ClientFragment clientFrag = new ClientFragment();
-    private RealTimeData realTimeData = new RealTimeData();
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -50,12 +53,51 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
      */
     private PagerAdapter mPagerAdapter;
 
-    public void onListFragmentInteraction(DummyContent.DummyItem item){
+    private int pointPos = 0;
 
+    WifiApManager wifiApManager;
+
+    SocketUtils soc;
+
+    private TextView originDataView;
+    private TextView parsedDataView;
+    private ArcProgress teProgress;
+    private ArcProgress hrProgress;
+
+    private String rawData;
+
+    public void onListFragmentInteraction(int position){
+        pointPos = position;
+        Toast.makeText(MainActivity.this, String.valueOf(position), Toast.LENGTH_SHORT).show();
     }
 
     public void onFragmentInteraction(Uri uri){
 
+    }
+
+    public void onFragmentMessage() {
+        new Thread(){
+            @Override
+            public void run(){
+                try {
+                    soc.SocketSendMsg("0123456789", pointPos);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public void onFragmentInteraction(List<TextView> v, List<ArcProgress> arc) {
+        originDataView = v.get(0);
+        parsedDataView = v.get(1);
+        teProgress = arc.get(0);
+        hrProgress = arc.get(1);
+    }
+
+    @Override
+    public void doSth() {
+        new UploadTask().execute();
     }
 
     @Override
@@ -70,9 +112,10 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myContent = (TextView) findViewById(R.id.web_data);
+        username = (TextView) findViewById(R.id.username);
 
-        //new TestTask().execute();
+        Intent intent = getIntent();
+        username.setText("当前用户：" + intent.getStringExtra("username"));
 
         //导航栏初始化
         BottomNavigationBar bottomNavigationBar = (BottomNavigationBar) findViewById(R.id.bottom_navigation_bar);
@@ -91,6 +134,7 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
             public void onTabSelected(int position) {
                 if (position == 0) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, clientFrag).commit();
+//                    getFragmentManager().findFragmentById(R.id.main_fragment_container).getView().findViewById(R.id.pager);
                 }
                 else if (position == 1) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment_container, infoFrag).commit();
@@ -104,38 +148,105 @@ public class MainActivity extends FragmentActivity implements ClientFragment.OnL
             }
         });
 
+        //wifi and socket
+//        wifiApManager = new WifiApManager(this);
+//        if (!wifiApManager.IsApOn()) {
+//            wifiApManager.showWritePermissionSettings();
+//            wifiApManager.OpenAp("CloudTill", "12345678");
+//        }
+
+        Handler myHandler = new Handler(getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                //socket消息为msg.obj.toString()
+
+                rawData = msg.obj.toString();
+                Gson gson = new Gson();
+                SensorData da = gson.fromJson(msg.obj.toString(),SensorData.class);
+                if (originDataView != null && parsedDataView != null) {
+                    originDataView .setText("原始数据: " + msg.obj.toString() + "\n");
+                    parsedDataView.setText("TE: " + da.getTE() + "\n");
+                    parsedDataView.append("HR: " + da.getHR() + "\n");
+                    parsedDataView.append("WT: " + da.getWT() + "\n");
+                    parsedDataView.append("WP: " + da.getWP() + "\n");
+                    parsedDataView.append("WD: " + da.getWD() + "\n");
+                    parsedDataView.append("RF: " + da.getRF() + "\n");
+                    parsedDataView.append("CD: " + da.getCD() + "\n");
+                    parsedDataView.append("SS: " + da.getSS() + "\n");
+                }
+
+                ObjectAnimator teAnim = ObjectAnimator.ofInt(teProgress, "progress", 0, Float.valueOf(da.getTE()).intValue());
+                teAnim.setInterpolator(new DecelerateInterpolator());
+                teAnim.setDuration(500);
+                teAnim.start();
+
+                ObjectAnimator hrAnim = ObjectAnimator.ofInt(hrProgress, "progress", 0, Float.valueOf(da.getHR()).intValue());
+                hrAnim.setInterpolator(new DecelerateInterpolator());
+                hrAnim.setDuration(500);
+                hrAnim.start();
+                super.handleMessage(msg);
+            }
+        };
+        soc = new SocketUtils(5600, myHandler);
+        StartSocket();
     }
 
-    public class TestTask extends AsyncTask<Void, Void, String>{
 
+    public class UploadTask extends AsyncTask<Void, Void, String> {
         @Override
         protected String doInBackground(Void... voids) {
-            String response = null;
-            try{
-                HashMap<String, String> map = new HashMap<>();
-                Gson gson = new Gson();
-                JsonUtils js = new JsonUtils();
-                JsonUtils.LoginJsonFormat login = js.new LoginJsonFormat();
-                login.name = "app";
-                login.passwd = "123";
-                String info = gson.toJson(login);
-                map.put("submit","appLogin");
-                map.put("appLoginInfo", info);
-//                map.put("name","app");
-//                map.put("passwd","123");
-                NetworkUtils handler = new NetworkUtils();
-                response = handler.Http_Post(map,"/api/login.php");
-//                response = handler.Http_Get("/api/logout.php");
-            } catch(IOException e) {
-                e.printStackTrace();
-                response = null;
+            String response = "ER";
+            if (rawData != null) {
+                try {
+                    HashMap<String, String> map = new HashMap<>();
+                    Gson gson = new Gson();
+                    SensorData da = gson.fromJson(rawData,SensorData.class);
+                    map.put("TE", da.getTE());
+                    map.put("HR", da.getHR());
+                    map.put("WT", da.getWT());
+                    map.put("WP", da.getWP());
+                    map.put("WD", da.getWD());
+                    map.put("RF", da.getRF());
+                    map.put("CD", da.getCD());
+                    NetworkUtils handler = new NetworkUtils();
+                    response = handler.Http_Post(map,"/api/upload.php");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+
             return response;
         }
 
         @Override
         protected void onPostExecute(String s) {
-            myContent.setText(s);
+            if (s.equals("OK")) {
+                Toast.makeText(MainActivity.this, "UploadDone!", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
+            }
         }
     }
+    public  void StartSocket() {
+//        while (wifiApManager.IsApOn());
+        try {
+            new Thread(){
+                @Override
+                public void run(){
+                    try {
+                        if (soc != null) {
+                            soc.SocketServerStart();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+                Toast.makeText(this, "SocketStarted", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+    }
+
 }

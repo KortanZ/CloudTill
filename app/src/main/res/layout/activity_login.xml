@@ -61,11 +61,12 @@
         app:met_primaryColor="@color/colorWhite" />
 
     <info.hoang8f.widget.FButton
-        android:id="@+id/button"
+        android:id="@+id/login"
         android:layout_width="140dp"
         android:layout_height="31dp"
         android:layout_marginTop="48dp"
         android:text="登陆"
+        android:onClick="tet"
         android:textColor="@color/colorWhite"
         app:cornerRadius="20dp"
         app:fButtonColor="@color/fbutton_color_green_sea"
@@ -74,5 +75,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password"
         app:shadowEnabled="false" />
+
+    <TextView
+        android:id="@+id/testLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="243dp"
+        tools:layout_editor_absoluteY="31dp" />
 
 </android.support.constraint.ConstraintLayout>

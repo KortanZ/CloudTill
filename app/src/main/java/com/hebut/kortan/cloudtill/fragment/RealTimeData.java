@@ -1,14 +1,25 @@
 package com.hebut.kortan.cloudtill.fragment;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.github.lzyzsd.circleprogress.ArcProgress;
+import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.hebut.kortan.cloudtill.R;
+
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +40,8 @@ public class RealTimeData extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private  OnFragmentMessageDeliverer mDeliverer;
 
     public RealTimeData() {
         // Required empty public constructor
@@ -68,10 +81,35 @@ public class RealTimeData extends Fragment {
         return inflater.inflate(R.layout.fragment_real_time_data, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Button button = (Button) getActivity().findViewById(R.id.refreshData);
+        TextView originText = (TextView) getActivity().findViewById(R.id.originData);
+        TextView parsedText = (TextView) getActivity().findViewById(R.id.parsedData);
+        ArcProgress teProgress = (ArcProgress) getActivity().findViewById(R.id.te_progress);
+        ArcProgress hrProgress = (ArcProgress) getActivity().findViewById(R.id.hr_progress);
+        List<TextView> viewList = new ArrayList<>();
+        List<ArcProgress> progresseList = new ArrayList<>();
+        viewList.add(originText);
+        viewList.add(parsedText);
+        progresseList.add(teProgress);
+        progresseList.add(hrProgress);
+        sendView(viewList, progresseList);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDeliverer != null) {
+                    mDeliverer.onFragmentMessage();
+                    mDeliverer.doSth();
+                }
+            }
+        });
+    }
+
+    public void sendView(List<TextView> v, List<ArcProgress> arc) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction(v, arc);
         }
     }
 
@@ -80,6 +118,13 @@ public class RealTimeData extends Fragment {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+
+        if (context instanceof OnFragmentMessageDeliverer) {
+            mDeliverer = (OnFragmentMessageDeliverer) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -104,6 +149,12 @@ public class RealTimeData extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(List<TextView> v, List<ArcProgress> arc);
     }
+
+    public interface OnFragmentMessageDeliverer {
+        void onFragmentMessage();
+        void doSth();
+    }
+
 }

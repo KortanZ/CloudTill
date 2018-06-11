@@ -39,16 +39,16 @@ public class SensorActivity extends AppCompatActivity {
 
         wifiApManager = new WifiApManager(this);
 
-        Handler myHandler = new Handler(getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                textView2.setText(msg.obj.toString());
-                super.handleMessage(msg);
-            }
-        };
-
-        soc = new SocketUtils(5600, myHandler);
-        scan();
+//        Handler myHandler = new Handler(getMainLooper()) {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                textView2.setText(msg.obj.toString());
+//                super.handleMessage(msg);
+//            }
+//        };
+//
+//        soc = new SocketUtils(5600, myHandler);
+//        scan();
     }
 
     private void scan() {

@@ -2,6 +2,7 @@ package com.hebut.kortan.cloudtill.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,10 +10,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.hebut.kortan.cloudtill.R;
 import com.hebut.kortan.cloudtill.dummy.DummyContent;
 import com.hebut.kortan.cloudtill.dummy.DummyContent.DummyItem;
+import com.hebut.kortan.cloudtill.utilities.SocketUtils;
 
 /**
  * A fragment representing a list of Items.
@@ -29,6 +33,8 @@ public class ClientFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
 
     private View view;
+
+    private MyClientRecyclerViewAdapter cAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -79,7 +85,8 @@ public class ClientFragment extends Fragment {
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-        recyclerView.setAdapter(new MyClientRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+        cAdapter = new MyClientRecyclerViewAdapter(SocketUtils.SocketGetList(), mListener);
+        recyclerView.setAdapter(cAdapter);
 
         //调用interface设置pager的adapter
         try {
@@ -90,6 +97,18 @@ public class ClientFragment extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Button button = (Button) getActivity().findViewById(R.id.refreshList);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -122,7 +141,7 @@ public class ClientFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(int position);
     }
 
     //设置adapter的接口

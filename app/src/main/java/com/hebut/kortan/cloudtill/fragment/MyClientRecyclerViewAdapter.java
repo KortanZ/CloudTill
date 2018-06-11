@@ -10,6 +10,8 @@ import com.hebut.kortan.cloudtill.R;
 import com.hebut.kortan.cloudtill.fragment.ClientFragment.OnListFragmentInteractionListener;
 import com.hebut.kortan.cloudtill.dummy.DummyContent.DummyItem;
 
+import java.io.Serializable;
+import java.net.Socket;
 import java.util.List;
 
 /**
@@ -17,12 +19,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyClientRecyclerViewAdapter extends RecyclerView.Adapter<MyClientRecyclerViewAdapter.ViewHolder> {
-
-    private final List<DummyItem> mValues;
+public class MyClientRecyclerViewAdapter extends RecyclerView.Adapter<MyClientRecyclerViewAdapter.ViewHolder>{
+    private final List<Socket> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyClientRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+
+    public MyClientRecyclerViewAdapter(List<Socket> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -37,8 +39,8 @@ public class MyClientRecyclerViewAdapter extends RecyclerView.Adapter<MyClientRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(String.valueOf(position + 1));
+        holder.mContentView.setText(mValues.get(position).getInetAddress().toString());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +48,7 @@ public class MyClientRecyclerViewAdapter extends RecyclerView.Adapter<MyClientRe
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onListFragmentInteraction(holder.getAdapterPosition());
                 }
             }
         });
@@ -61,7 +63,7 @@ public class MyClientRecyclerViewAdapter extends RecyclerView.Adapter<MyClientRe
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public Socket mItem;
 
         public ViewHolder(View view) {
             super(view);

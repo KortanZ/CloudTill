@@ -10,6 +10,7 @@ public class MyClientPagerAdapter extends FragmentStatePagerAdapter {
      * The number of pages (wizard steps) to show in this demo.
      */
     private static final int NUM_PAGES = 2;
+    private static MyClientRecyclerViewAdapter myAdapter;
     public MyClientPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -19,7 +20,7 @@ public class MyClientPagerAdapter extends FragmentStatePagerAdapter {
         if (position == 0) {
             return new RealTimeData();
         } else if (position == 1) {
-            return new FarmManage();
+            return FarmManage.newInstance();
         }
         return null;
     }
